@@ -2,25 +2,31 @@ package shadows.xcp;
 
 import extracells.item.WirelessTerminalType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent.Register;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.registries.IForgeRegistryModifiable;
 
-@Mod(modid = XCPatch.MODID, name = XCPatch.MODNAME, version = XCPatch.VERSION, dependencies = "required-after:extracells")
+@Mod(modid = XCPatch.MODID, name = XCPatch.MODNAME, version = XCPatch.VERSION, dependencies = "required-after:extracells;before:mekanism@[1.12.2-9.8.2,)")
 public class XCPatch {
 
 	public static final String MODID = "xcpatch";
 	public static final String MODNAME = "Extra Cells Patch";
-	public static final String VERSION = "1.0.1";
+	public static final String VERSION = "1.0.2";
 
 	static ResourceLocation brokenRecipe = new ResourceLocation("extracells:universalcraftingterminalrecipe");
 
-	@EventHandler
-	public void post(FMLPostInitializationEvent e) {
+	public XCPatch() {
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+
+	@SubscribeEvent
+	public void post(Register<IRecipe> e) {
 		((IForgeRegistryModifiable<?>) ForgeRegistries.RECIPES).remove(brokenRecipe);
 		ForgeRegistries.RECIPES.register(new TerminalRecipe().setRegistryName(MODID, "unbroken_terminal"));
 	}
